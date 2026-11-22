@@ -247,12 +247,16 @@ def _draw(sheet, name, x, y):
     _paste(sheet, pix, w, h, x, y, alpha)
 
 
-def build():
-    sheet = bytearray(bytes(BG) * (W * H))
+def _tile_grain(sheet):
     gw, gh, grain, galpha = load_image(os.path.join(ASSETS, "grain_256.png"))
     for ty in range(0, H, gh):
         for tx in range(0, W, gw):
             _paste(sheet, grain, gw, gh, tx, ty, galpha)
+
+
+def build():
+    sheet = bytearray(bytes(BG) * (W * H))
+    _tile_grain(sheet)
     for item in ART:
         _draw(sheet, item["file"], item["x"], item["y"])
     for bar in BARS_H:
