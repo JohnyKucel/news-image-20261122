@@ -2,266 +2,270 @@ import os
 import struct
 import zlib
 
-PAGE_W = 1024
-PAGE_H = 1024
+W = 1024
+H = 1024
 
-PAPER = (246, 239, 221)
-RULE = (198, 188, 164)
-RED = (163, 32, 26)
-RED_LT = (200, 90, 60)
+BG = (246, 239, 221)
+DIVIDER = (198, 188, 164)
+ACCENT = (163, 32, 26)
+ACCENT_SOFT = (200, 90, 60)
 
-BASE = os.path.dirname(os.path.abspath(__file__))
-ASSET_DIR = os.path.join(BASE, "assets")
-TARGET = os.path.join(
-    os.environ.get("MAKEFUN_OUTPUT_DIR", os.path.join(BASE, "out")),
+ROOT = os.path.dirname(os.path.abspath(__file__))
+ASSETS = os.path.join(ROOT, "assets")
+OUT = os.path.join(
+    os.environ.get("MAKEFUN_OUTPUT_DIR", os.path.join(ROOT, "out")),
     "entry.png",
 )
 
-PICTURES = [
-    ("illo_cop31.png", 258, 174),
-    ("illo_mexico.png", 24, 156),
-    ("illo_peru.png", 24, 302),
-    ("illo_estonia.png", 778, 156),
-    ("illo_brazil.png", 778, 302),
-    ("illo_airniugini.png", 24, 512),
-    ("illo_eulevy.png", 270, 512),
-    ("illo_italy.png", 516, 512),
-    ("illo_modi.png", 762, 512),
-    ("illo_brent.png", 24, 668),
-    ("illo_cricket.png", 270, 668),
-    ("illo_vance.png", 516, 668),
-    ("illo_chips.png", 762, 668),
+TEXT = [
+    {"file": "t_meta.png", "x": 24, "y": 11},
+    {"file": "t_ear_l.png", "x": 24, "y": 30},
+    {"file": "t_ear_r.png", "x": 850, "y": 30},
+    {"file": "t_masthead.png", "x": 226, "y": 54},
+    {"file": "t_tag.png", "x": 213, "y": 129},
+    {"file": "t_lead.png", "x": 257, "y": 158},
+    {"file": "t_side0.png", "x": 23, "y": 220},
+    {"file": "t_side1.png", "x": 23, "y": 366},
+    {"file": "t_side2.png", "x": 777, "y": 220},
+    {"file": "t_side3.png", "x": 777, "y": 366},
+    {"file": "t_band0_0.png", "x": 23, "y": 578},
+    {"file": "t_band0_1.png", "x": 269, "y": 578},
+    {"file": "t_band0_2.png", "x": 515, "y": 578},
+    {"file": "t_band0_3.png", "x": 761, "y": 578},
+    {"file": "t_band1_0.png", "x": 23, "y": 734},
+    {"file": "t_band1_1.png", "x": 269, "y": 734},
+    {"file": "t_band1_2.png", "x": 515, "y": 734},
+    {"file": "t_band1_3.png", "x": 762, "y": 734},
+    {"file": "t_numband.png", "x": 24, "y": 454},
+    {"file": "t_crypto.png", "x": 24, "y": 824},
+    {"file": "t_datecheck.png", "x": 24, "y": 914},
+    {"file": "t_alsotoday.png", "x": 608, "y": 914},
+    {"file": "t_foot.png", "x": 24, "y": 991},
 ]
 
-WORDS = [
-    ("t_meta.png", 24, 11),
-    ("t_ear_l.png", 24, 30),
-    ("t_ear_r.png", 850, 30),
-    ("t_masthead.png", 226, 54),
-    ("t_tag.png", 213, 129),
-    ("t_lead.png", 257, 158),
-    ("t_side0.png", 23, 220),
-    ("t_side1.png", 23, 366),
-    ("t_side2.png", 777, 220),
-    ("t_side3.png", 777, 366),
-    ("t_band0_0.png", 23, 578),
-    ("t_band0_1.png", 269, 578),
-    ("t_band0_2.png", 515, 578),
-    ("t_band0_3.png", 761, 578),
-    ("t_band1_0.png", 23, 734),
-    ("t_band1_1.png", 269, 734),
-    ("t_band1_2.png", 515, 734),
-    ("t_band1_3.png", 762, 734),
-    ("t_numband.png", 24, 454),
-    ("t_crypto.png", 24, 824),
-    ("t_datecheck.png", 24, 914),
-    ("t_alsotoday.png", 608, 914),
-    ("t_foot.png", 24, 991),
+ART = [
+    {"file": "illo_cop31.png", "x": 258, "y": 174},
+    {"file": "illo_mexico.png", "x": 24, "y": 156},
+    {"file": "illo_peru.png", "x": 24, "y": 302},
+    {"file": "illo_estonia.png", "x": 778, "y": 156},
+    {"file": "illo_brazil.png", "x": 778, "y": 302},
+    {"file": "illo_airniugini.png", "x": 24, "y": 512},
+    {"file": "illo_eulevy.png", "x": 270, "y": 512},
+    {"file": "illo_italy.png", "x": 516, "y": 512},
+    {"file": "illo_modi.png", "x": 762, "y": 512},
+    {"file": "illo_brent.png", "x": 24, "y": 668},
+    {"file": "illo_cricket.png", "x": 270, "y": 668},
+    {"file": "illo_vance.png", "x": 516, "y": 668},
+    {"file": "illo_chips.png", "x": 762, "y": 668},
 ]
 
-H_RULES = [
-    (24, 1000, 26, 1, RULE),
-    (24, 1000, 148, 1, RED_LT),
-    (24, 1000, 149, 2, RED),
-    (24, 1000, 450, 1, RULE),
-    (24, 1000, 507, 1, RULE),
-    (24, 1000, 663, 1, RULE),
-    (24, 1000, 818, 1, RULE),
-    (24, 1000, 982, 2, RULE),
+BARS_H = [
+    {"x0": 24, "x1": 1000, "y": 26, "t": 1, "c": DIVIDER},
+    {"x0": 24, "x1": 1000, "y": 148, "t": 1, "c": ACCENT_SOFT},
+    {"x0": 24, "x1": 1000, "y": 149, "t": 2, "c": ACCENT},
+    {"x0": 24, "x1": 1000, "y": 450, "t": 1, "c": DIVIDER},
+    {"x0": 24, "x1": 1000, "y": 507, "t": 1, "c": DIVIDER},
+    {"x0": 24, "x1": 1000, "y": 663, "t": 1, "c": DIVIDER},
+    {"x0": 24, "x1": 1000, "y": 818, "t": 1, "c": DIVIDER},
+    {"x0": 24, "x1": 1000, "y": 982, "t": 2, "c": DIVIDER},
 ]
 
-V_RULES = [
-    (252, 156, 440, RULE),
-    (772, 156, 440, RULE),
-    (266, 512, 658, RULE),
-    (512, 512, 658, RULE),
-    (758, 512, 658, RULE),
-    (266, 668, 814, RULE),
-    (512, 668, 814, RULE),
-    (758, 668, 814, RULE),
+BARS_V = [
+    {"x": 252, "y0": 156, "y1": 440, "c": DIVIDER},
+    {"x": 772, "y0": 156, "y1": 440, "c": DIVIDER},
+    {"x": 266, "y0": 512, "y1": 658, "c": DIVIDER},
+    {"x": 512, "y0": 512, "y1": 658, "c": DIVIDER},
+    {"x": 758, "y0": 512, "y1": 658, "c": DIVIDER},
+    {"x": 266, "y0": 668, "y1": 814, "c": DIVIDER},
+    {"x": 512, "y0": 668, "y1": 814, "c": DIVIDER},
+    {"x": 758, "y0": 668, "y1": 814, "c": DIVIDER},
 ]
 
 
-def _predict(left, up, up_left):
-    score = left + up - up_left
-    dl = abs(score - left)
-    du = abs(score - up)
-    dc = abs(score - up_left)
-    if dl <= du and dl <= dc:
-        return left
-    if du <= dc:
-        return up
-    return up_left
+def _paeth(a, b, c):
+    p = a + b - c
+    pa = abs(p - a)
+    pb = abs(p - b)
+    pc = abs(p - c)
+    if pa <= pb and pa <= pc:
+        return a
+    if pb <= pc:
+        return b
+    return c
 
 
-def read_png(path):
-    with open(path, "rb") as handle:
-        data = handle.read()
+def _unfilter(kind, raw, prev, nch):
+    row = bytearray(raw)
+    if kind == 0:
+        return row
+    if kind == 1:
+        for i in range(nch, len(row)):
+            row[i] = (row[i] + row[i - nch]) & 255
+        return row
+    if kind == 2:
+        for i in range(len(row)):
+            row[i] = (row[i] + prev[i]) & 255
+        return row
+    if kind == 3:
+        for i in range(len(row)):
+            left = row[i - nch] if i >= nch else 0
+            row[i] = (row[i] + ((left + prev[i]) >> 1)) & 255
+        return row
+    if kind == 4:
+        for i in range(len(row)):
+            left = row[i - nch] if i >= nch else 0
+            up = prev[i]
+            upleft = prev[i - nch] if i >= nch else 0
+            row[i] = (row[i] + _paeth(left, up, upleft)) & 255
+        return row
+    raise ValueError("unknown filter %d" % kind)
+
+
+def load_image(path):
+    with open(path, "rb") as fh:
+        data = fh.read()
     if data[:8] != b"\x89PNG\r\n\x1a\n":
-        raise ValueError("not a PNG: " + path)
-    pos = 8
-    width = height = None
-    bit_depth = colour = interlace = None
-    payload = bytearray()
-    while pos < len(data):
-        size = struct.unpack_from(">I", data, pos)[0]
-        tag = data[pos + 4:pos + 8]
-        chunk = data[pos + 8:pos + 8 + size]
+        raise ValueError("bad signature: " + path)
+    off = 8
+    w = h = None
+    depth = kind = lace = None
+    raw = bytearray()
+    while off < len(data):
+        size = struct.unpack_from(">I", data, off)[0]
+        tag = data[off + 4:off + 8]
+        body = data[off + 8:off + 8 + size]
         if tag == b"IHDR":
-            width, height, bit_depth, colour, _a, _b, interlace = (
-                struct.unpack(">IIBBBBB", chunk))
+            w, h, depth, kind, _c, _m, lace = struct.unpack(">IIBBBBB", body)
         elif tag == b"IDAT":
-            payload += chunk
+            raw += body
         elif tag == b"IEND":
             break
-        pos += 12 + size
-    if bit_depth != 8 or interlace != 0 or colour not in (0, 2, 6):
-        raise ValueError("unsupported PNG: " + path)
-    channels = {0: 1, 2: 3, 6: 4}[colour]
-    stream = zlib.decompress(bytes(payload))
-    step = width * channels
-    if channels == 1:
-        pixels = bytearray(width * height * 3)
+        off += 12 + size
+    if depth != 8 or lace != 0 or kind not in (0, 2, 6):
+        raise ValueError("unsupported image: " + path)
+    nch = {0: 1, 2: 3, 6: 4}[kind]
+    stream = zlib.decompress(bytes(raw))
+    step = w * nch
+    if nch == 1:
+        out = bytearray(w * h * 3)
     else:
-        pixels = bytearray(width * height * channels)
-    above = bytearray(step)
-    cursor = 0
-    for row in range(height):
-        mode = stream[cursor]
-        cursor += 1
-        line = bytearray(stream[cursor:cursor + step])
-        cursor += step
-        if mode == 1:
-            for i in range(channels, step):
-                line[i] = (line[i] + line[i - channels]) & 255
-        elif mode == 2:
-            for i in range(step):
-                line[i] = (line[i] + above[i]) & 255
-        elif mode == 3:
-            for i in range(step):
-                west = line[i - channels] if i >= channels else 0
-                line[i] = (line[i] + ((west + above[i]) >> 1)) & 255
-        elif mode == 4:
-            for i in range(step):
-                west = line[i - channels] if i >= channels else 0
-                north = above[i]
-                nw = above[i - channels] if i >= channels else 0
-                line[i] = (line[i] + _predict(west, north, nw)) & 255
-        elif mode != 0:
-            raise ValueError("bad PNG filter %d in %s" % (mode, path))
-        above = line
-        if channels == 1:
-            dest = row * width * 3
-            for x in range(width):
-                pixels[dest + x * 3] = line[x]
-                pixels[dest + x * 3 + 1] = line[x]
-                pixels[dest + x * 3 + 2] = line[x]
+        out = bytearray(w * h * nch)
+    prev = bytearray(step)
+    pos = 0
+    for row in range(h):
+        ftype = stream[pos]
+        pos += 1
+        line = _unfilter(ftype, stream[pos:pos + step], prev, nch)
+        pos += step
+        prev = line
+        if nch == 1:
+            base = row * w * 3
+            for x in range(w):
+                v = line[x]
+                out[base + x * 3] = v
+                out[base + x * 3 + 1] = v
+                out[base + x * 3 + 2] = v
         else:
-            dest = row * step
-            pixels[dest:dest + step] = line
-    return width, height, bytes(pixels), channels == 4
+            base = row * step
+            out[base:base + step] = line
+    return w, h, bytes(out), kind == 6
 
 
-def _block(tag, body):
+def _chunk(kind, payload):
     return (
-        struct.pack(">I", len(body))
-        + tag
-        + body
-        + struct.pack(">I", zlib.crc32(tag + body) & 0xFFFFFFFF)
+        struct.pack(">I", len(payload))
+        + kind
+        + payload
+        + struct.pack(">I", zlib.crc32(kind + payload) & 0xFFFFFFFF)
     )
 
 
-def _scanlines(rgb, w, h, mode):
+def _rows(rgb, w, h, use_up):
     step = w * 3
-    out = bytearray()
-    prior = bytes(step)
+    buf = bytearray()
+    prev = bytes(step)
     for y in range(h):
-        current = rgb[y * step:(y + 1) * step]
-        out.append(mode)
-        if mode == 0:
-            out += current
+        cur = rgb[y * step:(y + 1) * step]
+        buf.append(2 if use_up else 0)
+        if use_up:
+            buf += bytes((a - b) & 255 for a, b in zip(cur, prev))
         else:
-            out += bytes((a - b) & 255 for a, b in zip(current, prior))
-        prior = current
-    return bytes(out)
+            buf += cur
+        prev = cur
+    return bytes(buf)
 
 
-def write_png(path, w, h, rgb):
-    header = struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0)
-    plain = zlib.compress(_scanlines(rgb, w, h, 0), 9)
-    upped = zlib.compress(_scanlines(rgb, w, h, 2), 9)
-    body = plain if len(plain) <= len(upped) else upped
+def save_png(path, w, h, rgb):
+    head = struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0)
+    plain = zlib.compress(_rows(rgb, w, h, False), 9)
+    upped = zlib.compress(_rows(rgb, w, h, True), 9)
+    pick = plain if len(plain) <= len(upped) else upped
     blob = (
         b"\x89PNG\r\n\x1a\n"
-        + _block(b"IHDR", header)
-        + _block(b"IDAT", body)
-        + _block(b"IEND", b"")
+        + _chunk(b"IHDR", head)
+        + _chunk(b"IDAT", pick)
+        + _chunk(b"IEND", b"")
     )
-    with open(path, "wb") as handle:
-        handle.write(blob)
+    with open(path, "wb") as fh:
+        fh.write(blob)
 
 
-def stamp(canvas, img, iw, ih, ox, oy, has_alpha):
-    if not has_alpha:
-        for y in range(ih):
-            dst = ((oy + y) * PAGE_W + ox) * 3
-            src = y * iw * 3
-            canvas[dst:dst + iw * 3] = img[src:src + iw * 3]
+def _paste(sheet, pic, pw, ph, ox, oy, alpha):
+    if not alpha:
+        for y in range(ph):
+            d0 = ((oy + y) * W + ox) * 3
+            s0 = y * pw * 3
+            sheet[d0:d0 + pw * 3] = pic[s0:s0 + pw * 3]
         return
-    for y in range(ih):
-        prow = (oy + y) * PAGE_W * 3
-        irow = y * iw * 4
-        for x in range(iw):
-            s = irow + x * 4
-            a = img[s + 3]
+    for y in range(ph):
+        drow = (oy + y) * W * 3
+        srow = y * pw * 4
+        for x in range(pw):
+            s = srow + x * 4
+            a = pic[s + 3]
             if a == 0:
                 continue
-            d = prow + (ox + x) * 3
+            d = drow + (ox + x) * 3
             if a == 255:
-                canvas[d:d + 3] = img[s:s + 3]
+                sheet[d:d + 3] = pic[s:s + 3]
             else:
-                rest = 255 - a
+                inv = 255 - a
                 for k in range(3):
-                    canvas[d + k] = (
-                        img[s + k] * a + canvas[d + k] * rest + 127
-                    ) // 255
+                    sheet[d + k] = (pic[s + k] * a + sheet[d + k] * inv + 127) // 255
 
 
-def fill(canvas, x0, y0, x1, y1, rgb):
+def _rect(sheet, x0, y0, x1, y1, rgb):
     r, g, b = rgb
+    seg = bytes((r, g, b)) * (x1 - x0 + 1)
     for y in range(y0, y1 + 1):
-        base = y * PAGE_W * 3
-        for x in range(x0, x1 + 1):
-            o = base + x * 3
-            canvas[o] = r
-            canvas[o + 1] = g
-            canvas[o + 2] = b
+        base = y * W * 3 + x0 * 3
+        sheet[base:base + len(seg)] = seg
 
 
-def place(canvas, name, x, y):
-    iw, ih, pix, alpha = read_png(os.path.join(ASSET_DIR, name))
-    stamp(canvas, pix, iw, ih, x, y, alpha)
+def _draw(sheet, name, x, y):
+    w, h, pix, alpha = load_image(os.path.join(ASSETS, name))
+    _paste(sheet, pix, w, h, x, y, alpha)
 
 
-def render():
-    canvas = bytearray(bytes(PAPER) * (PAGE_W * PAGE_H))
-    gw, gh, grain, gal = read_png(os.path.join(ASSET_DIR, "grain_256.png"))
-    for ty in range(0, PAGE_H, gh):
-        for tx in range(0, PAGE_W, gw):
-            stamp(canvas, grain, gw, gh, tx, ty, gal)
-    for name, x, y in PICTURES:
-        place(canvas, name, x, y)
-    for x0, x1, y, th, col in H_RULES:
-        top = y - (th - 1) // 2
-        fill(canvas, x0, top, x1, top + th - 1, col)
-    for x, y0, y1, col in V_RULES:
-        fill(canvas, x, y0, x, y1, col)
-    for name, x, y in WORDS:
-        place(canvas, name, x, y)
-    os.makedirs(os.path.dirname(TARGET), exist_ok=True)
-    write_png(TARGET, PAGE_W, PAGE_H, bytes(canvas))
-    print("wrote", TARGET)
+def build():
+    sheet = bytearray(bytes(BG) * (W * H))
+    gw, gh, grain, galpha = load_image(os.path.join(ASSETS, "grain_256.png"))
+    for ty in range(0, H, gh):
+        for tx in range(0, W, gw):
+            _paste(sheet, grain, gw, gh, tx, ty, galpha)
+    for item in ART:
+        _draw(sheet, item["file"], item["x"], item["y"])
+    for bar in BARS_H:
+        top = bar["y"] - (bar["t"] - 1) // 2
+        _rect(sheet, bar["x0"], top, bar["x1"], top + bar["t"] - 1, bar["c"])
+    for bar in BARS_V:
+        _rect(sheet, bar["x"], bar["y0"], bar["x"], bar["y1"], bar["c"])
+    for item in TEXT:
+        _draw(sheet, item["file"], item["x"], item["y"])
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    save_png(OUT, W, H, bytes(sheet))
+    print("wrote", OUT)
 
 
 if __name__ == "__main__":
-    render()
+    build()
