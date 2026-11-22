@@ -21,14 +21,28 @@ def output_path():
     return os.path.join(dest, "entry.png")
 
 
+def digest_of(path):
+    total = hashlib.sha256()
+    with open(path, "rb") as handle:
+        while True:
+            chunk = handle.read(65536)
+            if not chunk:
+                break
+            total.update(chunk)
+    return total.hexdigest()
+
+
 def main():
     if not os.path.isfile(POSTER):
         raise SystemExit("missing pre-rendered poster: " + POSTER)
     target = output_path()
     os.makedirs(os.path.dirname(target), exist_ok=True)
     shutil.copyfile(POSTER, target)
-    digest = hashlib.sha256(open(target, "rb").read()).hexdigest()
-    print("wrote", target, os.path.getsize(target), "bytes", digest)
+    wanted = digest_of(POSTER)
+    got = digest_of(target)
+    if wanted != got:
+        raise SystemExit("copy mismatch: " + target)
+    print("wrote", target, os.path.getsize(target), "bytes", got)
 
 
 if __name__ == "__main__":
