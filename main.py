@@ -1,13 +1,17 @@
-"""The World in One Day -- Sunday 22 November 2026 (v4).
+"""The World in One Day -- Sunday 22 November 2026 (v5).
 
-Entry for make.fun news-image-20261122. A 34-story front page, drawn
-in code: COP31 lead, four side stories, a numbered world map, a
-CRYPTO NEWS strip, and a 24-cell numbered story grid. The artwork and
-text were pre-rendered by the build script (Pillow, outside this
-repository) into assets/*.png. This program is standard library only:
-it tiles the paper grain, pastes the pre-rendered pieces at fixed
-positions, draws the rules, and writes the poster, byte for byte, so
-every run writes the same file.
+Entry for make.fun news-image-20261122. A 34-story front page in the
+model of the winning paper: a giant date masthead, a six-number stat
+strip, a coloured region bar, three feature stories, two rows of six
+short stories, a CRYPTO NEWS strip with live prices, a dotted world
+map, a numbered 14-item brief index, and a DATE CHECK & METHODOLOGY
+box. Every story is unique and verified; the artwork is original
+cartoons drawn in code. The artwork and text were pre-rendered by the
+build script (Pillow, outside this repository) into assets/*.png.
+This program is standard library only: it tiles the paper grain,
+pastes the pre-rendered pieces at fixed positions, draws the rules,
+and writes the poster, byte for byte, so every run writes the same
+file.
 """
 
 import os
@@ -30,100 +34,73 @@ OUT = os.path.join(
 )
 
 TEXT = [
-    {"file": "t_meta.png", "x": 24, "y": 11},
-    {"file": "t_ear_l.png", "x": 24, "y": 30},
-    {"file": "t_ear_r.png", "x": 850, "y": 30},
-    {"file": "t_masthead.png", "x": 226, "y": 54},
-    {"file": "t_tag.png", "x": 213, "y": 127},
-    {"file": "t_lead.png", "x": 257, "y": 150},
-    {"file": "t_side0.png", "x": 23, "y": 212},
-    {"file": "t_side1.png", "x": 23, "y": 350},
-    {"file": "t_side2.png", "x": 777, "y": 212},
-    {"file": "t_side3.png", "x": 777, "y": 350},
-    {"file": "t_numband.png", "x": 24, "y": 436},
-    {"file": "t_map.png", "x": 24, "y": 490},
-    {"file": "t_crypto.png", "x": 24, "y": 552},
-    {"file": "t_grid00.png", "x": 27, "y": 636},
-    {"file": "t_grid01.png", "x": 191, "y": 636},
-    {"file": "t_grid02.png", "x": 355, "y": 636},
-    {"file": "t_grid03.png", "x": 519, "y": 636},
-    {"file": "t_grid04.png", "x": 683, "y": 636},
-    {"file": "t_grid05.png", "x": 847, "y": 636},
-    {"file": "t_grid06.png", "x": 27, "y": 707},
-    {"file": "t_grid07.png", "x": 191, "y": 707},
-    {"file": "t_grid08.png", "x": 355, "y": 707},
-    {"file": "t_grid09.png", "x": 519, "y": 707},
-    {"file": "t_grid10.png", "x": 683, "y": 707},
-    {"file": "t_grid11.png", "x": 847, "y": 707},
-    {"file": "t_grid12.png", "x": 27, "y": 778},
-    {"file": "t_grid13.png", "x": 191, "y": 778},
-    {"file": "t_grid14.png", "x": 355, "y": 778},
-    {"file": "t_grid15.png", "x": 519, "y": 778},
-    {"file": "t_grid16.png", "x": 683, "y": 778},
-    {"file": "t_grid17.png", "x": 847, "y": 778},
-    {"file": "t_grid18.png", "x": 27, "y": 849},
-    {"file": "t_grid19.png", "x": 191, "y": 849},
-    {"file": "t_grid20.png", "x": 355, "y": 849},
-    {"file": "t_grid21.png", "x": 519, "y": 849},
-    {"file": "t_grid22.png", "x": 683, "y": 849},
-    {"file": "t_grid23.png", "x": 847, "y": 849},
-    {"file": "t_datecheck.png", "x": 24, "y": 928},
-    {"file": "t_alsotoday.png", "x": 608, "y": 928},
-    {"file": "t_foot.png", "x": 24, "y": 997},
+    {"file": "t_topband.png", "x": 0, "y": 0},
+    {"file": "t_masthead.png", "x": 206, "y": 42},
+    {"file": "t_ticker.png", "x": 165, "y": 97},
+    {"file": "t_stats.png", "x": 28, "y": 122},
+    {"file": "t_regions.png", "x": 24, "y": 164},
+    {"file": "t_feat0.png", "x": 23, "y": 188},
+    {"file": "t_feat1.png", "x": 352, "y": 188},
+    {"file": "t_feat2.png", "x": 682, "y": 188},
+    {"file": "t_small0_0.png", "x": 24, "y": 406},
+    {"file": "t_small0_1.png", "x": 188, "y": 406},
+    {"file": "t_small0_2.png", "x": 352, "y": 406},
+    {"file": "t_small0_3.png", "x": 516, "y": 406},
+    {"file": "t_small0_4.png", "x": 679, "y": 406},
+    {"file": "t_small0_5.png", "x": 844, "y": 406},
+    {"file": "t_small1_0.png", "x": 24, "y": 542},
+    {"file": "t_small1_1.png", "x": 188, "y": 542},
+    {"file": "t_small1_2.png", "x": 352, "y": 542},
+    {"file": "t_small1_3.png", "x": 516, "y": 542},
+    {"file": "t_small1_4.png", "x": 680, "y": 542},
+    {"file": "t_small1_5.png", "x": 844, "y": 542},
+    {"file": "t_crypto.png", "x": 24, "y": 678},
+    {"file": "t_map.png", "x": 24, "y": 748},
+    {"file": "t_briefs.png", "x": 374, "y": 748},
+    {"file": "t_datecheck.png", "x": 804, "y": 764},
+    {"file": "t_footband.png", "x": 0, "y": 1000},
 ]
 
 ART = [
-    {"file": "illo_cop31.png", "x": 258, "y": 168},
-    {"file": "illo_mexico.png", "x": 24, "y": 150},
-    {"file": "illo_peru.png", "x": 24, "y": 296},
-    {"file": "illo_estonia.png", "x": 778, "y": 150},
-    {"file": "illo_brazil.png", "x": 778, "y": 296},
-    {"file": "illo_airniugini_s.png", "x": 27, "y": 636},
-    {"file": "illo_eulevy_s.png", "x": 191, "y": 636},
-    {"file": "illo_italy_s.png", "x": 355, "y": 636},
-    {"file": "illo_modi_s.png", "x": 519, "y": 636},
-    {"file": "illo_brent_s.png", "x": 683, "y": 636},
-    {"file": "illo_cricket_s.png", "x": 847, "y": 636},
-    {"file": "illo_vance_s.png", "x": 27, "y": 707},
-    {"file": "illo_chips_s.png", "x": 191, "y": 707},
-    {"file": "illo_aviation.png", "x": 355, "y": 707},
-    {"file": "illo_russia.png", "x": 519, "y": 707},
-    {"file": "illo_icj.png", "x": 683, "y": 707},
-    {"file": "illo_shenzhen.png", "x": 847, "y": 707},
-    {"file": "illo_akvan.png", "x": 27, "y": 778},
-    {"file": "illo_wallst.png", "x": 191, "y": 778},
-    {"file": "illo_iran.png", "x": 355, "y": 778},
-    {"file": "illo_gta.png", "x": 519, "y": 778},
-    {"file": "illo_denmark.png", "x": 683, "y": 778},
-    {"file": "illo_footeng.png", "x": 847, "y": 778},
-    {"file": "illo_footeur.png", "x": 27, "y": 849},
-    {"file": "illo_nba.png", "x": 191, "y": 849},
-    {"file": "illo_ronaldo.png", "x": 355, "y": 849},
-    {"file": "illo_psm.png", "x": 519, "y": 849},
-    {"file": "illo_soletf.png", "x": 683, "y": 849},
-    {"file": "illo_roadmap.png", "x": 847, "y": 849},
+    {"file": "illo_russia_w.png", "x": 24, "y": 320},
+    {"file": "illo_cop31_s.png", "x": 353, "y": 320},
+    {"file": "illo_iran_w.png", "x": 682, "y": 320},
+    {"file": "illo_mexico_s.png", "x": 27, "y": 484},
+    {"file": "illo_peru_s.png", "x": 191, "y": 484},
+    {"file": "illo_estonia_s.png", "x": 355, "y": 484},
+    {"file": "illo_brazil_s.png", "x": 519, "y": 484},
+    {"file": "illo_airniugini_s.png", "x": 683, "y": 484},
+    {"file": "illo_eulevy_s.png", "x": 847, "y": 484},
+    {"file": "illo_italy_s.png", "x": 27, "y": 620},
+    {"file": "illo_modi_s.png", "x": 191, "y": 620},
+    {"file": "illo_brent_s.png", "x": 355, "y": 620},
+    {"file": "illo_cricket_s.png", "x": 519, "y": 620},
+    {"file": "illo_vance_s.png", "x": 683, "y": 620},
+    {"file": "illo_chips_s.png", "x": 847, "y": 620},
+    {"file": "illo_printer.png", "x": 812, "y": 920},
 ]
 
 BARS_H = [
-    {"x0": 24, "x1": 1000, "y": 26, "t": 1, "c": DIVIDER},
-    {"x0": 24, "x1": 1000, "y": 140, "t": 1, "c": ACCENT_SOFT},
-    {"x0": 24, "x1": 1000, "y": 141, "t": 2, "c": ACCENT},
-    {"x0": 24, "x1": 1000, "y": 430, "t": 1, "c": DIVIDER},
-    {"x0": 24, "x1": 1000, "y": 486, "t": 1, "c": DIVIDER},
-    {"x0": 24, "x1": 1000, "y": 548, "t": 1, "c": DIVIDER},
-    {"x0": 24, "x1": 1000, "y": 632, "t": 1, "c": DIVIDER},
-    {"x0": 24, "x1": 1000, "y": 924, "t": 1, "c": DIVIDER},
-    {"x0": 24, "x1": 1000, "y": 988, "t": 2, "c": DIVIDER},
+    {"x0": 24, "x1": 1000, "y": 112, "t": 1, "c": DIVIDER},
+    {"x0": 24, "x1": 1000, "y": 400, "t": 1, "c": DIVIDER},
+    {"x0": 24, "x1": 1000, "y": 538, "t": 1, "c": DIVIDER},
+    {"x0": 24, "x1": 1000, "y": 674, "t": 1, "c": DIVIDER},
+    {"x0": 24, "x1": 1000, "y": 742, "t": 1, "c": DIVIDER},
 ]
 
 BARS_V = [
-    {"x": 252, "y0": 150, "y1": 424, "c": DIVIDER},
-    {"x": 772, "y0": 150, "y1": 424, "c": DIVIDER},
-    {"x": 184, "y0": 636, "y1": 920, "c": DIVIDER},
-    {"x": 348, "y0": 636, "y1": 920, "c": DIVIDER},
-    {"x": 512, "y0": 636, "y1": 920, "c": DIVIDER},
-    {"x": 676, "y0": 636, "y1": 920, "c": DIVIDER},
-    {"x": 840, "y0": 636, "y1": 920, "c": DIVIDER},
+    {"x": 348, "y0": 192, "y1": 394, "c": DIVIDER},
+    {"x": 677, "y0": 192, "y1": 394, "c": DIVIDER},
+    {"x": 184, "y0": 410, "y1": 530, "c": DIVIDER},
+    {"x": 348, "y0": 410, "y1": 530, "c": DIVIDER},
+    {"x": 512, "y0": 410, "y1": 530, "c": DIVIDER},
+    {"x": 676, "y0": 410, "y1": 530, "c": DIVIDER},
+    {"x": 840, "y0": 410, "y1": 530, "c": DIVIDER},
+    {"x": 184, "y0": 546, "y1": 666, "c": DIVIDER},
+    {"x": 348, "y0": 546, "y1": 666, "c": DIVIDER},
+    {"x": 512, "y0": 546, "y1": 666, "c": DIVIDER},
+    {"x": 676, "y0": 546, "y1": 666, "c": DIVIDER},
+    {"x": 840, "y0": 546, "y1": 666, "c": DIVIDER},
 ]
 
 
